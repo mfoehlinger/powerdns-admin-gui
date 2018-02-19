@@ -4,6 +4,10 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff:
-.idea/*
 _config.yml
 
+/.idea/vcs.xml
+Würde .idea/inspectionProfiles/ löschen
+Würde .idea/modules.xml löschen
+Würde .idea/powerdns-admin-gui.iml löschen
+Würde .idea/workspace.xml löschen
