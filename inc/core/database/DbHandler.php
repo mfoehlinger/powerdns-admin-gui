@@ -87,7 +87,7 @@ class DbHandler
      */
     private function connectPostgreSQL(array $dbAccess)
     {
-        $this->dsn  = "pgsql:host=".$dbAccess['host'].";port=5432;dbname=".$dbAccess['table'].";user=".$dbAccess['user'].";password=".$dbAccess['password'];
+        $this->dsn  = "pgsql:host=".$dbAccess['host'].";port=".$dbAccess['port'].";dbname=".$dbAccess['table'].";user=".$dbAccess['user'].";password=".$dbAccess['password'];
     }
 
     /**
