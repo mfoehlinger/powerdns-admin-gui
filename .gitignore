@@ -6,8 +6,9 @@
 # User-specific stuff:
 _config.yml
 
-/.idea/vcs.xml
+/.idea
 Würde .idea/inspectionProfiles/ löschen
 Würde .idea/modules.xml löschen
 Würde .idea/powerdns-admin-gui.iml löschen
 Würde .idea/workspace.xml löschen
+Würde .idea/copyright/ löschen
