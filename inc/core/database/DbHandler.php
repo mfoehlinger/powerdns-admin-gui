@@ -16,6 +16,8 @@ namespace inc\core\database;
 
 class DbHandler
 {
+    public  $query;
+
     private $dbh;
 
     private $dsn        = NULL;
@@ -24,7 +26,7 @@ class DbHandler
 
     private $stmt;
 
-    public $query;
+    private $sqlPrefix;
 
     /**
      * DbHandler constructor.
@@ -64,9 +66,11 @@ class DbHandler
         {
             case 'postgresql':
                 $this->connectPostgreSQL($dbAccess);
+                $this->sqlPrefix    = 'psql';
                 break;
             default:
                 $this->connectPostgreSQL($dbAccess);
+                $this->sqlPrefix    = 'psql';
         }
 
         try
@@ -88,6 +92,18 @@ class DbHandler
     private function connectPostgreSQL(array $dbAccess)
     {
         $this->dsn  = "pgsql:host=".$dbAccess['host'].";port=".$dbAccess['port'].";dbname=".$dbAccess['table'].";user=".$dbAccess['user'].";password=".$dbAccess['password'];
+    }
+
+    /**
+     * @param string $file
+     */
+    public function queryFile(string $file)
+    {
+        $file       = str_replace(array('/','\\'),array(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR),$file);
+
+        $query      = file_get_contents($file.'.'.$this->sqlPrefix);
+
+        $this->query($query);
     }
 
     /**
@@ -145,7 +161,7 @@ class DbHandler
     {
         $this->execute();
 
-        return $this->stmt->fetch(\PDO::FETCH_ASSOC);;
+        return $this->stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     /**
