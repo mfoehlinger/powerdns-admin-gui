@@ -1,5 +1,5 @@
 SELECT
-  fallback_class AS class,
-  fallback_function AS function
+  fallback_class AS return_class,
+  fallback_function AS return_function
 FROM
   system_fallback
