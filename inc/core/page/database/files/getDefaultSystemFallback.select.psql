@@ -1,0 +1,5 @@
+SELECT
+  fallback_class AS class,
+  fallback_function AS function
+FROM
+  system_fallback

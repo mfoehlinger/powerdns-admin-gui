@@ -1,0 +1,13 @@
+SELECT
+  su.url_id,
+  su.url,
+  su.url_key,
+  su.url_access,
+  su.return_class,
+  su.return_function,
+  su.fallback_class,
+  su.fallback_function,
+  su.user_group_id,
+  su.user_right_id
+FROM
+  system_urls AS su
