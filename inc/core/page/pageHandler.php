@@ -17,6 +17,7 @@ namespace inc\core\page;
 use inc\core\client\clientAccessHandler;
 use inc\core\client\clientServer;
 use inc\core\loader\refelctionLoader;
+use inc\core\register\registerVariable;
 use inc\core\session\sessionHandler;
 
 class pageHandler
@@ -111,7 +112,7 @@ class pageHandler
 
                 if( $invokeReturn !== False )
                 {
-                    #variable::set('page.loader.pageData',$pageData);
+                    registerVariable::set('page.loader.pageData',$systemUrlData);
 
                     return $invokeReturn;
                 }
@@ -124,7 +125,7 @@ class pageHandler
         {
             $reflectionLoader   = new refelctionLoader($systemUrlData['fallback_class'], $systemUrlData['fallback_class']);
 
-            #variable::set('page.loader.pageData',$pageData);
+            registerVariable::set('page.loader.pageData',$systemUrlData);
 
             return $reflectionLoader->invokde();
         }
