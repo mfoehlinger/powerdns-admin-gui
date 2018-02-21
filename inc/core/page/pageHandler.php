@@ -14,7 +14,9 @@
 namespace inc\core\page;
 
 
+use inc\core\client\clientAccessHandler;
 use inc\core\client\clientServer;
+use inc\core\loader\refelctionLoader;
 use inc\core\session\sessionHandler;
 
 class pageHandler
@@ -37,6 +39,8 @@ class pageHandler
 
         $this->sessionHandler->check();
 
+        $return                 = False;
+
         if( $this->sessionHandler->get('success') )
         {
             #core::init()->output('notification',$sessionHandler->get('success'));
@@ -48,18 +52,23 @@ class pageHandler
             $this->sessionHandler->setNewExpire();
         }
 
-        if( $this->clientServer->getRequestMethodPost() === True && isset( $_REQUEST['action'] ) )
-        {
+        #if( $this->clientServer->getRequestMethodPost() === True && isset( $_REQUEST['action'] ) )
+        #{
             #$this->processPostRequest($_REQUEST);
-        }
+        #}
 
         if( $this->pageForm === False || $this->clientServer->getRequestMethodGet() === True )
         {
-            $this->processGetRequest();
+            $return = $this->processGetRequest();
         }
 
+        return $return;
     }
 
+    /**
+     * @return mixed
+     * @throws \ReflectionException
+     */
     public function processGetRequest()
     {
         $fallBack           = False;
@@ -67,5 +76,57 @@ class pageHandler
         $pageConfigLoader   = new pageConfigLoader();
 
         $systemUrlData      = $pageConfigLoader->loadPageGetRequest();
+
+        if( !isset( $systemUrlData['user_group_id'] ) )
+        {
+            $systemUrlData['user_group_id']     = 0;
+        }
+
+        if( !isset( $systemUrlData['user_right_id'] ) )
+        {
+            $systemUrlData['user_right_id']     = 0;
+        }
+
+        if(
+            isset($systemUrlData['url_access']) &&
+            $systemUrlData['url_access'] == 1 &&
+            $systemUrlData['user_group_id'] != 0
+        )
+        {
+            $userRightId    = $systemUrlData['user_right_id'] != 0 ? $systemUrlData['user_right_id'] : False;
+
+            if( clientAccessHandler::checkAccess($systemUrlData['user_group_id'],$userRightId) === False )
+            {
+                $fallBack = true;
+            }
+        }
+
+        if( $fallBack === False )
+        {
+            if( method_exists($systemUrlData['return_class'], $systemUrlData['return_function']) )
+            {
+                $reflectionLoader   = new refelctionLoader($systemUrlData['return_class'], $systemUrlData['return_function']);
+
+                $invokeReturn       = $reflectionLoader->invokde();
+
+                if( $invokeReturn !== False )
+                {
+                    #variable::set('page.loader.pageData',$pageData);
+
+                    return $invokeReturn;
+                }
+            }
+
+            $fallBack = true;
+        }
+
+        if( $fallBack === True )
+        {
+            $reflectionLoader   = new refelctionLoader($systemUrlData['fallback_class'], $systemUrlData['fallback_class']);
+
+            #variable::set('page.loader.pageData',$pageData);
+
+            return $reflectionLoader->invokde();
+        }
     }
 }
